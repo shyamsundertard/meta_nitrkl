@@ -6,15 +6,14 @@ import classNames from 'classnames';
 
 const NavBar = () => {
     const currentPath = usePathname();
-    console.log(currentPath)
 
     const links=[
         {label:'Dashboard', href:'/'},
-        {label:'About', href:'/about'}
+        {label:'More', href:'/more'}
     ] 
 
   return (
-    <nav className='flex space-x-7 border-b mb-5 px-7 h-10'>
+    <nav className='flex space-x-7 border-b pt-3  px-7 h-[50px] w-full bg-gray-200 fixed'>
         <Link href="/" >Logo</Link>
         <ul className='flex space-x-7'>
             {links.map(link=><Link 

@@ -1,23 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
-import {z} from 'zod';
 import prisma from "../../../../prisma/prisma";
+import { createDataSchema } from "../../validationSchema";
 
-const createDataSchema = z.object({
-    title :z.string().min(1).max(500),
-    description: z.array(z.record(z.unknown())).min(1)
-})
+export async function GET(req:NextRequest) {
+
+     const data = await prisma.metainfo.findMany({});
+    return NextResponse.json(data,{status:200});
+}
 
 export async function POST(req:NextRequest) {
     const body = await req.json();
     const validation = createDataSchema.safeParse(body);
     if(!validation.success)
-    return NextResponse.json(validation.error.errors,{status:400});
+    return NextResponse.json(validation.error.format(),{status:400})
+    else{
+        await prisma.metainfo.create({
+           data:{
+               title: body.title,
+               description: body.description
+           }
+       });
+       return NextResponse.json("Data Saved",{status:201});
+    }
+    
 
-     await prisma.metainfo.create({
-        data:{
-            title: body.title,
-            description: body.description
-        }
-    });
-    return NextResponse.json("Data Saved",{status:201});
 }
