@@ -9,11 +9,11 @@ const NavBar = () => {
 
     const links=[
         {label:'Dashboard', href:'/'},
-        {label:'More', href:'/more'}
-    ] 
+        {label:'Create Page', href:'/createpage'}
+    ]
 
   return (
-    <nav className='flex space-x-7 border-b pt-3  px-7 h-[50px] w-full bg-gray-200 fixed'>
+    <nav className='flex space-x-7 border-b pt-3  px-7 h-[50px] w-full bg-gray-200 '>
         <Link href="/" >Logo</Link>
         <ul className='flex space-x-7'>
             {links.map(link=><Link 

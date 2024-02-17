@@ -5,8 +5,7 @@ import Spinner from '../../../components/Spinner';
 
 const NewDataPage = () => {
     const [title,setTtitle] = useState('');
-    const [heading,setHeading] = useState('');
-    const [info,setInfo] = useState('');
+    const [about,setAbout] = useState('');
     const [isSubmitting, setSubmitting]=useState(false)
 
     const router = useRouter();
@@ -21,9 +20,10 @@ const NewDataPage = () => {
                 body:JSON.stringify({
                     title,
                     description:[{
-                       heading,
-                       info
-                    }]
+                       heading:"About",
+                       about
+                    }],
+                    parentId: 838681
                 }),
             }) ;
         } catch (error) {
@@ -32,46 +32,33 @@ const NewDataPage = () => {
     }
 
   return (
-    <div className='flex'>
+    <div className='flex justify-center w-full '>
         <form 
-        className='flex-c border max-w-100'
+        className=' flex flex-col w-[250px] h-[130px] rounded-xl pt-5 mt-5 border max-w-200 min-w-200 '
         onSubmit={(e)=> {
             addData();
             setSubmitting(true);
-            router.push('/more');
+            router.push('/createpage');
             e.preventDefault();
             }} >
-        <div className='flex pl-6 pt-1 pb-1 '>
+        <div className='flex flex-col pl-6 pt-1 pb-1'>
         <input
         className='flex focus:outline-none'
         type= "text"
-        placeholder='Enter title'
+        placeholder='Title of Page'
         onChange={(e)=>setTtitle(e.target.value)}
         required
         />
-        </div>
-        <div className='flex-c  pl-3 space-y-1'>
-        <div className='flex  pl-3'>
         <input
-        className='flex focus:outline-none'
+        className='flex break-words focus:outline-none max-w-[200px]'
         type= "text"
-        placeholder='Enter Heading'
-        onChange={(e)=>setHeading(e.target.value)}
+        placeholder='About'
+        onChange={(e)=>setAbout(e.target.value)}
         required
         />
-        </div>
-        <div className='flex pl-3'>
-        <input
-        className='flex pb-3 focus:outline-none'
-        type= "text"
-        placeholder='Enter Information'
-        onChange={(e)=>setInfo(e.target.value)}
-        required
-        />
-        </div>
         </div>
         <button disabled={isSubmitting}
-        className='flex border ml-2 p-1 mb-1 rounded bg-blue-400'
+        className='flex self-end items-center border ml-2 p-1 mb-1 w-[65px] h-[30px] rounded bg-blue-400'
         type='submit'
         >Submit {isSubmitting && <Spinner/>}</button>
         </form>

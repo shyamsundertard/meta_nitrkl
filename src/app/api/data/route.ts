@@ -17,7 +17,8 @@ export async function POST(req:NextRequest) {
         await prisma.metainfo.create({
            data:{
                title: body.title,
-               description: body.description
+               description: body.description,
+               parentId: body.parentId
            }
        });
        return NextResponse.json("Data Saved",{status:201});

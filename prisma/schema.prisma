@@ -12,6 +12,7 @@ model Metainfo{
   id           Int        @id @default(autoincrement())
   title        String     @unique
   description  Json[]
+  parentId     Int
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
 }
