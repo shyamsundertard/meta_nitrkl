@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "../../../../prisma/prisma";
 import { createDataSchema } from "../../validationSchema";
 
-export async function GET(req:NextRequest) {
+export async function GET() {
 
      const data = await prisma.metainfo.findMany({});
     return NextResponse.json(data,{status:200});
