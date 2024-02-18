@@ -6,13 +6,13 @@ import Spinner from '../../../components/Spinner';
 const NewDataPage = () => {
     const [title,setTtitle] = useState('');
     const [about,setAbout] = useState('');
-    const [isSubmitting, setSubmitting]=useState(false)
+    const [isSubmitting, setSubmitting]=useState(false);
 
     const router = useRouter();
 
     async function addData() {
         try {
-            await fetch('../../api/data',{
+            await fetch('http://localhost:3000/api/data',{
                 method: "POST",
                 headers:{
                     "Content-Type":"application/json",
@@ -20,14 +20,15 @@ const NewDataPage = () => {
                 body:JSON.stringify({
                     title,
                     description:[{
-                       heading:"About",
-                       about
+                        tag:"About",
+                        about
                     }],
                     parentId: 838681
                 }),
             }) ;
+            router.push(`http://localhost:3000/Page/${title}`);
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
     }
 
@@ -37,8 +38,6 @@ const NewDataPage = () => {
         className=' flex flex-col w-[250px] h-[130px] rounded-xl pt-5 mt-5 border max-w-200 min-w-200 '
         onSubmit={(e)=> {
             addData();
-            setSubmitting(true);
-            router.push('/createpage');
             e.preventDefault();
             }} >
         <div className='flex flex-col pl-6 pt-1 pb-1'>

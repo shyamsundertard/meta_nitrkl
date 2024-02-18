@@ -14,7 +14,7 @@ const MorePage = () => {
     const getData = async() => {
       const response = await fetch('http://localhost:3000/api/data',{
         method: "GET",
-        cache: 'no-store'
+        cache: 'no-cache'
       });
       const data =await response.json() as Data[];
       setDetails(data);
@@ -24,7 +24,7 @@ const MorePage = () => {
 
   return (
     <div className='flex flex-col'>
-      <div className='flex'>
+      <div className='flex flex-col'>
         {details.map((data)=>(
           <div key={data.id}>
             <div>{data.title}</div> 
