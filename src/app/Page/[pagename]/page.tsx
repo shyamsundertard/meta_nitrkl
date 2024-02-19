@@ -1,6 +1,6 @@
 'use client';
 import { JsonArray } from '@prisma/client/runtime/library';
-import EditComponent from 'components/EditComponent';
+import EditComponent from 'components/UpdateAndDeleteComponent';
 import React, { useEffect, useState } from 'react'
 
 type PageInfo ={
