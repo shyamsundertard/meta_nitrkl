@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "../../../../prisma/prisma";
 import { createDataSchema } from "../../validationSchema";
 
-export async function GET() {
+export async function PATCH(req:NextRequest) {
 
      const data = await prisma.metainfo.findMany({});
     return NextResponse.json(data,{status:200});
@@ -24,13 +24,11 @@ export async function POST(req:NextRequest) {
                    parentId: body.parentId
                }
            });
-           console.log("Data Saved")
+           console.log("Page Created")
            return NextResponse.json("Data Saved",{status:201});
         }
     } catch (error) {
         console.log(error);
         return new Response(JSON.stringify(error),{status:500})
     }
-    
-
 }

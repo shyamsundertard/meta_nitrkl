@@ -8,13 +8,17 @@ const NavBar = () => {
     const currentPath = usePathname();
 
     const links=[
-        {label:'Dashboard', href:'/'},
         {label:'Create Page', href:'/createpage'}
     ]
 
   return (
     <nav className='flex space-x-7 border-b pt-3  px-7 h-[50px] w-full bg-gray-200 '>
-        <Link href="/" >Logo</Link>
+        <Link href="/" >
+        <div className='flex gap-1'>
+            Logo
+        <span className='italic font-serif'>metaVista</span>
+        </div>
+            </Link>
         <ul className='flex space-x-7'>
             {links.map(link=><Link 
             key={link.href} 

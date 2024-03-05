@@ -120,4 +120,3 @@ export async function DELETE(req: NextRequest, { params }: { params?: { pagename
       return new Response(JSON.stringify({ error: "Failed to delete Section" }), { status: 500 });
     }
   };
-  
