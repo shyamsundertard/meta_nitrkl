@@ -1,14 +1,19 @@
 import React, { useState } from 'react'
 
 const UpdateComponent = (props: {
-  handleSectionClick: any;pagename: string; index:Number; heading: string; detail: string;
+  handleSectionClick: any;
+  pagename: string; 
+  index:Number; 
+  heading: string; 
+  detail: string;
+  webPageName:string;
 }) => {
     const [heading ,setHeading]  = useState(props.heading);
     const [detail ,setDetail]  = useState(props.detail);
 
     const update = async ()=>{
       try {
-        await fetch(`http://localhost:3000/api/page/${props.pagename}`,{
+        await fetch(`http://localhost:3000/${props.webPageName}/api/page/${props.pagename}`,{
           method: "PUT",
           headers:{
             "Content-Type":"application/json",

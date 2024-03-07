@@ -3,9 +3,24 @@ import prisma from "../../../../prisma/prisma";
 import { createDataSchema } from "../../validationSchema";
 
 export async function PATCH(req:NextRequest) {
+    const body = await req.json();
 
-     const data = await prisma.metainfo.findMany({});
-    return NextResponse.json(data,{status:200});
+    try {     
+        if (body.parentId == 0) {
+            const data = await prisma.metainfo.findMany({
+               where:{
+                   parentId:body.parentId
+               }
+            });
+           return NextResponse.json(data,{status:200});
+        } else {
+            const data = await prisma.metainfo.findMany({})
+            return NextResponse.json(data,{status:200})
+        }
+    
+    } catch (error) {
+        return new Response(JSON.stringify(error),{status:500})
+    }
 }
 
 export async function POST(req:NextRequest) {

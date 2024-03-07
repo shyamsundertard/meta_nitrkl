@@ -1,12 +1,21 @@
 import { NextRequest } from "next/server";
-import prisma from "../../../../../prisma/prisma";
+import prisma from "../../../../../../prisma/prisma";
 
-export async function GET(req:NextRequest,{params}:{params?:{pagename?:string}}){
+export async function GET(req:NextRequest,{params}:{params?:{pagename?:string, webPageName?:string}}){
     const title =params?.pagename;
+    const webPageName =params?.webPageName;
+
     try {
+      const info = await prisma.metainfo.findUnique({
+        where:{
+          title:webPageName,
+          parentId:0
+        }
+      })
         const data = await prisma.metainfo.findUnique({
             where:{
-                title:title
+                title:title,
+                parentId: info?.id as number
             }
         });
         return new Response(JSON.stringify(data),{status:200});
@@ -15,13 +24,22 @@ export async function GET(req:NextRequest,{params}:{params?:{pagename?:string}})
     }
 };
 
-export async function PATCH(req:NextRequest,{params}:{params?:{pagename?:string}}){
+export async function PATCH(req:NextRequest,{params}:{params?:{pagename?:string, webPageName?:string}}){
     const title=params?.pagename;
+    const webPageName =params?.webPageName;
+
     const body = await req.json();
     try {
+      const data = await prisma.metainfo.findUnique({
+        where:{
+          title:webPageName,
+          parentId:0
+        }
+      })
         await prisma.metainfo.update({
             where:{
-                title:title
+                title:title,
+                parentId:data?.id
             },
             data:{
                 description:{
@@ -38,13 +56,21 @@ export async function PATCH(req:NextRequest,{params}:{params?:{pagename?:string}
     }
 };
 
-export async function PUT(req:NextRequest,{params}:{params?:{pagename?:string}}){
+export async function PUT(req:NextRequest,{params}:{params?:{pagename?:string, webPageName?:string}}){
     const title=params?.pagename;
+    const webPageName =params?.webPageName;
     const body = await req.json();
     try {
+      const data = await prisma.metainfo.findUnique({
+        where:{
+          title:webPageName,
+          parentId:0
+        }
+      })
         const existingData = await prisma.metainfo.findUnique({
           where: {
             title: title,
+            parentId:data?.id
           },
           select: {
             description: true,
@@ -57,7 +83,6 @@ export async function PUT(req:NextRequest,{params}:{params?:{pagename?:string}})
     
         const updatedDescription = existingData.description.map((item, index) => {
           if (index === body.index) {
-            // Update the JSON object at the specified index
             return {
               heading: body.heading,
               detail: body.detail,
@@ -69,6 +94,7 @@ export async function PUT(req:NextRequest,{params}:{params?:{pagename?:string}})
         await prisma.metainfo.update({
           where: {
             title: title,
+            parentId:data?.id
           },
           data: {
             description: {
@@ -82,14 +108,22 @@ export async function PUT(req:NextRequest,{params}:{params?:{pagename?:string}})
     }
 };
 
-export async function DELETE(req: NextRequest, { params }: { params?: { pagename?: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params?: { pagename?: string, webPageName?:string } }) {
     const title = params?.pagename;
+    const webPageName =params?.webPageName;
     const body = await req.json();
   
     try {
+      const data = await prisma.metainfo.findUnique({
+        where:{
+          title:webPageName,
+          parentId:0
+        }
+      })
       const existingData = await prisma.metainfo.findUnique({
         where: {
           title: title,
+          parentId:data?.id
         },
         select: {
           description: true,
@@ -107,6 +141,7 @@ export async function DELETE(req: NextRequest, { params }: { params?: { pagename
       await prisma.metainfo.update({
         where: {
           title: title,
+          parentId:data?.id
         },
         data: {
           description: {

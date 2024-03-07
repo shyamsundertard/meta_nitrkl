@@ -18,7 +18,7 @@ type Des={
   about: string;
 }
 
-const DynamicPage = ({params}:{params:{pagename:string}}) => {
+const DynamicPage = ({params}:{params:{pagename:string,webPageName:string}}) => {
   const [pageInfoDetails,setPageInfoDetails] = useState<PageInfo | undefined>();
   const [description, setDescription] = useState<Des[] | undefined>([]);
   const [heading, setHeading] = useState('');
@@ -29,6 +29,7 @@ const DynamicPage = ({params}:{params:{pagename:string}}) => {
   const [isMenuVisivble, setIsMenuVisible] = useState(false);
 
   const pagename = params?.pagename;
+  const webPageName = params?.webPageName;
 
   const toggleMenu=()=>{
     setIsMenuVisible(!isMenuVisivble);
@@ -45,7 +46,7 @@ const DynamicPage = ({params}:{params:{pagename:string}}) => {
     const getPage =async()=>{
 
       try {
-        const response = await fetch(`http://localhost:3000/api/page/${params?.pagename}`,{
+        const response = await fetch(`http://localhost:3000/${webPageName}/api/page/${pagename}`,{
           method: "GET",
           cache: 'no-cache'
         });
@@ -67,11 +68,11 @@ const DynamicPage = ({params}:{params:{pagename:string}}) => {
       }
     }
     getPage();
-  },[params?.pagename,description?.length])
+  },)
 
   const addSubpage = async ()=>{
     try {
-      await fetch(`http://localhost:3000/api/page/${pagename}`,{
+      await fetch(`http://localhost:3000/${webPageName}/api/page/${pagename}`,{
         method:"POST",
         headers:{
           "Content-Type":"application/json",
@@ -87,7 +88,7 @@ const DynamicPage = ({params}:{params:{pagename:string}}) => {
 
   const section = async ()=>{
     try {
-      await fetch(`http://localhost:3000/api/page/${pagename}`,{
+      await fetch(`http://localhost:3000/${webPageName}/api/page/${pagename}`,{
         method: "PATCH",
         cache: "no-cache",
         headers:{
@@ -98,6 +99,7 @@ const DynamicPage = ({params}:{params:{pagename:string}}) => {
         detail,
       })
       });
+      setIsAdding(false);
     } catch (error) {
       console.error('Error adding section', error);
     }
@@ -105,7 +107,7 @@ const DynamicPage = ({params}:{params:{pagename:string}}) => {
 
   const remove = async ()=>{
     try {
-      await fetch(`http://localhost:3000/api/page/${pagename}`,{
+      await fetch(`http://localhost:3000/${webPageName}/api/page/${pagename}`,{
         method: "DELETE",
         cache: "no-cache",
         headers:{
@@ -124,7 +126,7 @@ const DynamicPage = ({params}:{params:{pagename:string}}) => {
   const restOfDescription = description?.slice(1);
 
   return (
-    <div className='w-full flex-center flex-col pb-8' >
+    <div className='w-full flex-center flex-col pb-8 px-3' >
       <h1 className='font-bold text-2xl text-center' >
        {pageInfoDetails?.title}
       </h1>
@@ -137,21 +139,26 @@ const DynamicPage = ({params}:{params:{pagename:string}}) => {
         </button>}
       </div>
       {showEditForm &&
-      <div className='fixed top-0 left-0 min-w-[100%] min-h-[100%] bg-black bg-opacity-50 h-screen '>
-         <UpdateComponent pagename ={params?.pagename} index = {index} heading={heading} detail={detail} handleSectionClick={handleSectionClick} />
+      <div className='fixed z-10 top-0 left-0 min-w-[100%] min-h-[100%] bg-black bg-opacity-50 h-screen '>
+         <UpdateComponent 
+         pagename ={params?.pagename} 
+         index = {index} 
+         heading={heading} 
+         detail={detail} 
+         handleSectionClick={handleSectionClick} 
+         webPageName={webPageName}
+         />
         </div>}
       {isAdding && <div className='fixed top-0 left-0 min-w-[100%] min-h-[100%] bg-black bg-opacity-50 h-screen '>
       <form 
     className='flex flex-col p-2 w-[700px] left-[30%] top-[200px] min-h-[300px] bg-white border rounded-lg fixed'
     onSubmit={(e)=>{
        section();
-      e.preventDefault();
-      setIsAdding(false);
-      console.log({pagename})
+      e.preventDefault();      
     }}>
       <strong>
       <input
-      className='flex focus: outline-none px-2'
+      className='flex focus: outline-none px-2 w-[500px]'
       type='text'
       placeholder='Name'
       onChange={(e)=> setHeading(e.target.value)}
@@ -165,12 +172,12 @@ const DynamicPage = ({params}:{params:{pagename:string}}) => {
       required
       />
       <div className='flex flex-row justify-end' >
-      <button
-      className='flex self-end items-center border ml-2 p-1 mb-1 w-[60px] h-[30px] rounded bg-gray-200'
+      <div
+      className='flex self-end items-center cursor-pointer border ml-2 p-1 mb-1 w-[60px] h-[30px] rounded bg-gray-200'
       onClick={()=>{
         handleClick();
       }}
-      >Cancel</button>
+      >Cancel</div>
       <button
       className='flex self-end items-center border ml-2 p-1 mb-1 w-[45px] h-[30px] rounded bg-gray-200'
       type='submit'
@@ -178,12 +185,12 @@ const DynamicPage = ({params}:{params:{pagename:string}}) => {
       </div>
       </form>
       </div>}
-      <div className='flex py-3'>
+      <div className='flex flex-col py-3'>
       {restOfDescription?.map((item, index) => (
         <div className='flex'
         key={index}
         onClick={()=>{
-          setIndex(index++);
+          setIndex(index + 1);
           setHeading(item.heading);
           setDetail(item.detail);
 
@@ -192,12 +199,12 @@ const DynamicPage = ({params}:{params:{pagename:string}}) => {
           <div className='flex flex-row justify-between'>
             <p><strong className='border-b border-gray-400' >{item.heading}:</strong></p> 
             <div className='relative inline-block'>
-              <div 
-              onMouseEnter={toggleMenu}
+              <button 
+              onClick={()=>toggleMenu()}
               className='flex items-center justify-end cursor-pointer'
             >
               <BsThreeDotsVertical />
-               </div>
+               </button>
             {isMenuVisivble && 
             <div 
             onMouseLeave={toggleMenu}
